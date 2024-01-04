@@ -20,8 +20,14 @@ public class AccountController {
     }
 
     @PostMapping("/save")
-    public String completableFutureTest(@RequestBody AccountDto accountDto) {
+    public String saveAccount(@RequestBody AccountDto accountDto) {
         accountService.saveAccount(accountDto);
+        return "success";
+    }
+
+    @PostMapping("/completable-future/test")
+    public String completableFutureTest(@RequestBody AccountDto accountDto) {
+        accountService.completableFutureTest(accountDto);
         return "success";
     }
 }
