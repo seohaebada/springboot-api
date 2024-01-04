@@ -1,1 +1,18 @@
+server:
+  port: 5050
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sampleapidb
+    username: sampleapi
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
 
