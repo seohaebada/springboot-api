@@ -1,4 +1,4 @@
-package org.api.parallel.domain;
+package org.api.account.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

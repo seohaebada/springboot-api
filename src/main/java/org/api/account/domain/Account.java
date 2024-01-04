@@ -1,4 +1,4 @@
-package org.api.parallel.domain;
+package org.api.account.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

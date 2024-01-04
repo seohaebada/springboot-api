@@ -1,8 +1,8 @@
-package org.api.parallel.controller;
+package org.api.account.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.api.parallel.service.AccountService;
+import org.api.account.service.AccountService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

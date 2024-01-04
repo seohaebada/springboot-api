@@ -1,8 +1,8 @@
-package org.api.parallel.service;
+package org.api.account.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.api.parallel.domain.AccountRepository;
+import org.api.account.domain.AccountRepository;
 import org.springframework.stereotype.Service;
 
 @Slf4j
