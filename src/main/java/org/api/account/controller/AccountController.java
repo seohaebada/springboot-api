@@ -30,4 +30,10 @@ public class AccountController {
         accountService.completableFutureTest(accountDto);
         return "success";
     }
+
+    @PostMapping("/completable-future/foreach/test")
+    public String completableFutureForEachTest(@RequestBody AccountDto accountDto) {
+        accountService.completableFutureForEachTest(accountDto);
+        return "success";
+    }
 }
