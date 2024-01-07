@@ -37,7 +37,7 @@ public class AccountService {
         // service2(accountDto1), service3(accountDto2)
         list.forEach(target -> CompletableFuture.runAsync(() -> {
             log.info("runAsync()...");
-            log.info("Thread Name : " + Thread.currentThread().getName());
+            log.info("completableFutureTest() Thread Name : " + Thread.currentThread().getName());
             // update 로직 수행
             accountRepository.save(target.toEntity());
         }).exceptionally(throwable -> {
@@ -53,6 +53,7 @@ public class AccountService {
 
         // service2(accountDto1), service3(accountDto2)
         CompletableFuture.runAsync(() -> {
+            log.info("completableFutureForEachTest() Thread Name : " + Thread.currentThread().getName());
             execute(list);
         }).exceptionally(throwable -> {
             log.error("error : " + throwable.getMessage());
@@ -102,8 +103,10 @@ public class AccountService {
         return list;
     }
 
-    @Transactional
     public void execute(List<AccountDto> list) {
-        list.forEach(target -> accountRepository.save(target.toEntity()));
+        list.forEach(target -> {
+            accountRepository.save(target.toEntity());
+            log.info("execute() Thread Name : " + Thread.currentThread().getName());
+        });
     }
 }
