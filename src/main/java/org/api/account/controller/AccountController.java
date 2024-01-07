@@ -26,14 +26,14 @@ public class AccountController {
     }
 
     @PostMapping("/completable-future/test")
-    public String completableFutureTest(@RequestBody AccountDto accountDto) {
-        accountService.completableFutureTest(accountDto);
+    public String completableFutureTest() {
+        accountService.completableFutureTest();
         return "success";
     }
 
     @PostMapping("/completable-future/foreach/test")
-    public String completableFutureForEachTest(@RequestBody AccountDto accountDto) {
-        accountService.completableFutureForEachTest(accountDto);
+    public String completableFutureForEachTest() {
+        accountService.completableFutureForEachTest();
         return "success";
     }
 }

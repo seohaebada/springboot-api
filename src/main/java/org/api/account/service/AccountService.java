@@ -9,8 +9,11 @@ import org.api.account.dto.AccountDto;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,31 +31,13 @@ public class AccountService {
     }
 
     @Transactional
-    public void completableFutureTest(AccountDto accountDto) {
-        // service1
-        Account account = accountDto.toEntity();
-        accountRepository.save(account);
-
-        // List 생성
-        List<AccountDto> list = new ArrayList<>();
-
-        AccountDto accountDto1 = new AccountDto();
-        accountDto1.setEmail("seohae1@gmail.com");
-        accountDto1.setNickname("seohae1");
-        accountDto1.setPassword("1234");
-
-        list.add(accountDto1);
-
-        AccountDto accountDto2 = new AccountDto();
-        accountDto2.setEmail("seohae2@gmail.com");
-        accountDto2.setNickname("seohae1"); // 중복 오류 발생
-        accountDto2.setPassword("1234");
-
-        list.add(accountDto2);
+    public void completableFutureTest() {
+        List<AccountDto> list = makeAccountTargetList();
 
         // service2(accountDto1), service3(accountDto2)
         list.forEach(target -> CompletableFuture.runAsync(() -> {
             log.info("runAsync()...");
+            log.info("Thread Name : " + Thread.currentThread().getName());
             // update 로직 수행
             accountRepository.save(target.toEntity());
         }).exceptionally(throwable -> {
@@ -62,27 +47,9 @@ public class AccountService {
     }
 
     @Transactional
-    public void completableFutureForEachTest(AccountDto accountDto) {
-        // service1
-        Account account = accountDto.toEntity();
-        accountRepository.save(account);
-
-        // List 생성
-        List<AccountDto> list = new ArrayList<>();
-
-        AccountDto accountDto1 = new AccountDto();
-        accountDto1.setEmail("seohae5@gmail.com");
-        accountDto1.setNickname("seohae1");
-        accountDto1.setPassword("1234");
-
-        list.add(accountDto1);
-
-        AccountDto accountDto2 = new AccountDto();
-        accountDto2.setEmail("seohae6@gmail.com");
-        accountDto2.setNickname("seohae1"); // 중복 오류 발생
-        accountDto2.setPassword("1234");
-
-        list.add(accountDto2);
+    public void completableFutureForEachTest() {
+        // 마지막 데이터 조회
+        List<AccountDto> list = makeAccountTargetList();
 
         // service2(accountDto1), service3(accountDto2)
         CompletableFuture.runAsync(() -> {
@@ -91,6 +58,48 @@ public class AccountService {
             log.error("error : " + throwable.getMessage());
             return null;
         });
+    }
+
+    private List<AccountDto> makeAccountTargetList() {
+        // 마지막 데이터 조회
+        List<Account> all = accountRepository.findAll();
+        Optional<Account> first = all.stream()
+                .sorted(Comparator.comparing(Account::getId, Comparator.reverseOrder()))
+                .findFirst();
+
+        Long lastId = first.get().getId();
+
+        // service1
+        lastId = lastId + 1;
+
+        AccountDto accountDto = new AccountDto();
+        accountDto.setEmail("seohae" + lastId + "@gmail.com");
+        accountDto.setNickname("seohae" + lastId);
+        accountDto.setPassword("1234");
+
+        accountRepository.save(accountDto.toEntity());
+
+        // List 생성
+        List<AccountDto> list = new ArrayList<>();
+
+        lastId = lastId + 1;
+
+        AccountDto accountDto1 = new AccountDto();
+        accountDto1.setEmail("seohae" + lastId + "@gmail.com");
+        accountDto1.setNickname("seohae" + lastId);
+        accountDto1.setPassword("1234");
+
+        list.add(accountDto1);
+
+//        lastId = lastId + 1; // 고의 오류 발생
+
+        AccountDto accountDto2 = new AccountDto();
+        accountDto2.setEmail("seohae" + lastId + "@gmail.com");
+        accountDto2.setNickname("seohae" + lastId); // 중복 오류 발생
+        accountDto2.setPassword("1234");
+
+        list.add(accountDto2);
+        return list;
     }
 
     @Transactional
