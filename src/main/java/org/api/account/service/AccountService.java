@@ -13,7 +13,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,7 +33,7 @@ public class AccountService {
     public void completableFutureTest() {
         List<AccountDto> list = makeAccountTargetList();
 
-        // service2(accountDto1), service3(accountDto2)
+        // accountDto1, accountDto2
         list.forEach(target -> CompletableFuture.runAsync(() -> {
             log.info("runAsync()...");
             log.info("completableFutureTest() Thread Name : " + Thread.currentThread().getName());
@@ -68,7 +67,10 @@ public class AccountService {
                 .sorted(Comparator.comparing(Account::getId, Comparator.reverseOrder()))
                 .findFirst();
 
-        Long lastId = first.get().getId();
+        Long lastId = 0L;
+        if (first.isPresent()) {
+            lastId = first.get().getId();
+        }
 
         // service1
         lastId = lastId + 1;
@@ -78,6 +80,7 @@ public class AccountService {
         accountDto.setNickname("seohae" + lastId);
         accountDto.setPassword("1234");
 
+        // accountDto
         accountRepository.save(accountDto.toEntity());
 
         // List 생성
@@ -104,9 +107,9 @@ public class AccountService {
     }
 
     public void execute(List<AccountDto> list) {
+        log.info("execute() Thread Name : " + Thread.currentThread().getName());
         list.forEach(target -> {
             accountRepository.save(target.toEntity());
-            log.info("execute() Thread Name : " + Thread.currentThread().getName());
         });
     }
 }
